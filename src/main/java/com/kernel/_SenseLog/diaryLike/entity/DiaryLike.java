@@ -10,9 +10,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "diary_likes")
+@NoArgsConstructor
 public class DiaryLike extends BaseTimeEntity {
 
   @Id
@@ -27,4 +29,10 @@ public class DiaryLike extends BaseTimeEntity {
   @JoinColumn(name = "diary_id", nullable = false)
   private Diary diary;
 
+  // 👉 이 생성자를 꼭 추가해줘
+  public DiaryLike(User user, Diary diary) {
+    this.user = user;
+    this.diary = diary;
+  }
 }
+
