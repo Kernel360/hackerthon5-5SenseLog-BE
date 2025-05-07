@@ -10,9 +10,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import javax.naming.Name;
 
 @Entity
 @Table(name = "diary_groups")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Group extends BaseTimeEntity {
 
   @Id
@@ -30,6 +36,18 @@ public class Group extends BaseTimeEntity {
   private User createdBy;
 
   private String status;
+
+  @Builder
+  public Group(String name, String description, User createdBy){
+    this.name = name;
+    this.description = description;
+    this.createdBy = createdBy;
+  }
+
+  public void update(String name, String description){
+    this.name = name;
+    this.description = description;
+  }
 
 }
 
