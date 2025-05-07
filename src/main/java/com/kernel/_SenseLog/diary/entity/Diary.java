@@ -30,9 +30,9 @@ public class Diary extends BaseTimeEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "tag_id", nullable = false)
-  private Tag tag;
+//  @ManyToOne
+//  @JoinColumn(name = "tag_id", nullable = false)
+  private String tag;
 
   @ManyToOne
   @JoinColumn(name = "group_id", nullable = false)

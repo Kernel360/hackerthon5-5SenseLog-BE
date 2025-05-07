@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "diary_groups")
 public class Group extends BaseTimeEntity {
 
   @Id
