@@ -25,8 +25,8 @@ public class DiaryServiceImpl implements DiaryService {
   @Override
   public Diary create(Diary diary) {
     // toDo: ai message, Tag 받기
-    diary.addAiMessage("ai message");
-    diary.addTag(Tag.기쁨);
+//    diary.addAiMessage("ai message");
+//    diary.addTag(Tag.기쁨);
     return diaryRepository.save(diary);
   }
 
