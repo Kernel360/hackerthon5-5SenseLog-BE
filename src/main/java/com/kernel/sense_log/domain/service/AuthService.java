@@ -18,9 +18,12 @@ public class AuthService {
     public String login(User user) {
         User dbUser = userRepository.findByEmail(user.getEmail());
 
+
         if (dbUser == null) {
             throw new UnauthenticatedException("User does not exist.");
         }
+
+        user.initUserId(dbUser.getId());
 
         if (!userServiceImpl.validatePassword(user.getPassword(), dbUser)) {
             throw new UnauthenticatedException("Incorrect password.");

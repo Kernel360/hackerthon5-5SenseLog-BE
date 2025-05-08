@@ -1,7 +1,6 @@
 package com.kernel.sense_log.web.dto;
 
 import com.kernel.sense_log.domain.entity.User;
-import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserResDTO {
 
-    @Column(nullable = false, length = 255)
     private String email;
 
-    @Column(nullable = false, length = 50)
     private String nickname;
 
     @Builder
