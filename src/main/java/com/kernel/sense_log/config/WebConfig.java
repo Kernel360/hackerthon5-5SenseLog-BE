@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(authenticationInterceptor)
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/", "/auth/join", "/auth/login");
+                .excludePathPatterns("/", "/api/auth/join", "/api/auth/login");
     }
 
     @Override
@@ -34,6 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000")
                 .allowedMethods("*")
-                .allowCredentials(true);
+                .allowCredentials(true)
+                .allowedHeaders("*");
     }
 }

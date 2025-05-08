@@ -1,6 +1,7 @@
 package com.kernel.sense_log.web.controller;
 
 import com.kernel.sense_log.common.dto.ResponseDTO;
+import com.kernel.sense_log.common.dto.ResultObject;
 import com.kernel.sense_log.domain.auth.jwt.JwtUtil;
 import com.kernel.sense_log.domain.entity.User;
 import com.kernel.sense_log.domain.service.AuthService;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.kernel.sense_log.common.exception.ResultType.UNAUTHORIZED;
+
 @Slf4j
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final JwtUtil jwtUtil;
@@ -45,11 +48,14 @@ public class AuthController {
     public ResponseDTO<?> login(@RequestBody UserReqDTO userReqDTO, HttpServletResponse response) {
         User user = userReqDTO.toEntity();
         String token = authService.login(user);
-        
-        // 쿠키 설정 - JwtUtil 클래스의 메서드 사용
+
+        if (token == null) {
+            return new ResponseDTO<>(new ResultObject(UNAUTHORIZED, "Login failed: token is null"));
+        }
+
         jwtUtil.addTokenToCookie(response, token);
-        
-        // 데이터 없이 응답, 성공 상태만 반환
         return ResponseDTO.ok();
     }
+
+
 }

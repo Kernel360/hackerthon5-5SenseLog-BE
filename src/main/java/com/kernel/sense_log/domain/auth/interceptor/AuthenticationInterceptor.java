@@ -15,22 +15,27 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 @RequiredArgsConstructor
 public class AuthenticationInterceptor implements HandlerInterceptor {
+
     private final JwtUtil jwtUtil;
     private final JwtInterceptorHelper jwtInterceptorHelper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         try {
             String accessToken = jwtInterceptorHelper.extractAccessTokenFromRequest(request);
             User loginUser = jwtUtil.getLoginUserFromAccessToken(accessToken);
             request.setAttribute("loginUser", loginUser);
         } catch (ExpiredTokenException ete) {
-            // TODO : 만료된 토큰으로 리프레시 토큰으로 토큰 재발급하는 로직을 짜야함
             throw new UnauthenticatedException("Token is expired");
         } catch (InvalidTokenException ite) {
             throw new UnauthenticatedException();
         }
+
         return true;
     }
 }
