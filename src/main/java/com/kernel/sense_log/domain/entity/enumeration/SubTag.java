@@ -20,5 +20,15 @@ public enum SubTag {
     짜증나는,
     피곤한,
     스트레스,
-    지루한
+    지루한;
+
+    public static SubTag fromString(String value) {
+        for (SubTag tag : SubTag.values()) {
+            if (tag.name().equals(value)) {
+                return tag;
+            }
+        }
+        return null;
+    }
+
 }

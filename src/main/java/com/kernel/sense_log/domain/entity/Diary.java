@@ -34,4 +34,8 @@ public class Diary extends BaseTimeEntity {
   public void updateAiMessage(String s){
     this.aiMessage = s;
   }
+
+  public void addTag(String s){
+    this.tag = Tag.fromString(s);
+  }
 }

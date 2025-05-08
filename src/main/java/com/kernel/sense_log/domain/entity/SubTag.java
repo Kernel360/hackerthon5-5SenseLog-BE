@@ -1,6 +1,7 @@
 package com.kernel.sense_log.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 @Entity
 @Table(name = "sub_tags")
@@ -15,4 +16,10 @@ public class SubTag {
 
     @Column(nullable = false)
     private Long diaryId;
+
+    @Builder
+    public SubTag(com.kernel.sense_log.domain.entity.enumeration.SubTag subTag, Long diaryId){
+        this.subTag = subTag;
+        this.diaryId = diaryId;
+    }
 }
