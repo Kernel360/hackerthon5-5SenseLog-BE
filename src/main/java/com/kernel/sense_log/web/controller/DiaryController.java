@@ -47,8 +47,7 @@ public class DiaryController {
     Diary diary = diaryService.create(
         DiaryReqDto.toEntity(userId, diaryRequestDto));
     List<SubTag> subTags = subTagService.findAllSubTags(diary.getId());
-    Optional<User> user = userService.findById(userId);
-    return ResponseDTO.ok(DiaryResDto.toDto(diary, user, subTags));
+    return ResponseDTO.ok(DiaryResDto.toDto(diary, Optional.of(user), subTags));
   }
 
   @DeleteMapping("/{diaryId}")
