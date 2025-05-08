@@ -1,7 +1,6 @@
 package com.kernel.sense_log.web.controller;
 
 import com.kernel.sense_log.common.dto.ResponseDTO;
-import com.kernel.sense_log.domain.entity.Diary;
 import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import com.kernel.sense_log.domain.service.impl.DiaryServiceImpl;
 import com.kernel.sense_log.web.dto.request.DiaryReqDto;
@@ -11,7 +10,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,10 +28,10 @@ public class DiaryController {
 
   @PostMapping
   public ResponseDTO<DiaryResDto> create(
-      Long userId,
+//      Long userId,
       @Valid @RequestBody DiaryReqDto diaryRequestDto) {
     return ResponseDTO.ok(DiaryResDto.toDto(diaryService.create(
-        DiaryReqDto.toEntity(userId, diaryRequestDto))));
+        DiaryReqDto.toEntity(1L, diaryRequestDto))));
   }
 
   @DeleteMapping("/{diaryId}")
@@ -44,12 +42,29 @@ public class DiaryController {
     return ResponseDTO.ok();
   }
 
-  @GetMapping
+  @GetMapping("/all")
   public ResponseDTO<List<DiaryResDto>> readAllByTag(
       @RequestParam(name = "tag") Tag tag,
       @PageableDefault
       Pageable pageable
   ) {
     return diaryService.readAllByTag(pageable, tag);
+  }
+
+  @GetMapping("/all/today")
+  public ResponseDTO<List<DiaryResDto>> readAllByCustomDay(
+      @PageableDefault
+      Pageable pageable) {
+
+    return diaryService.readAllByCustomDay(pageable);
+  }
+
+  @GetMapping("/mine")
+  public ResponseDTO<List<DiaryResDto>> readAllMyDiary(
+//      Long myId,
+      @PageableDefault
+      Pageable pageable
+  ) {
+    return diaryService.readAllMyDiary(1L, pageable);
   }
 }

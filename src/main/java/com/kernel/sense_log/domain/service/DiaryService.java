@@ -15,4 +15,9 @@ public interface DiaryService {
 
   ResponseDTO<List<DiaryResDto>> readAllByTag(Pageable pageable, Tag tag);
 
+  ResponseDTO<List<DiaryResDto>> readAllMyDiary(Long userId, Pageable pageable);
+
+  ResponseDTO<List<DiaryResDto>> readAllByCustomDay(Pageable pageable);
+
+
 }
