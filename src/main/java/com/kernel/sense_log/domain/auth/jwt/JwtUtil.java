@@ -8,6 +8,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
@@ -122,5 +124,29 @@ public class JwtUtil {
             throw new InvalidTokenException();
         }
         return claims;
+    }
+
+    // JwtUtil.java에 다음 메서드 추가
+    public void addTokenToCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie("AUTH_ACCESS_TOKEN", token);
+        cookie.setHttpOnly(true);  // JavaScript에서 접근 불가능하게 설정 (XSS 방지)
+        cookie.setSecure(false);   // 개발 환경에서는 HTTP도 허용 (프로덕션에서는 true로 변경)
+        cookie.setPath("/");       // 모든 경로에서 쿠키를 사용할 수 있도록 설정
+
+        // 토큰 만료 시간과 일치시키기
+        cookie.setMaxAge((int) (EXPIRATION_TIME_MS / 1000)); // 초 단위로 변환
+
+        response.addCookie(cookie);
+    }
+
+    // 로그아웃을 위한 쿠키 삭제 메서드도 추가
+    public void removeTokenFromCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("AUTH_ACCESS_TOKEN", null);
+        cookie.setMaxAge(0);  // 즉시 만료
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);  // 개발 환경에 맞게 설정
+
+        response.addCookie(cookie);
     }
 }

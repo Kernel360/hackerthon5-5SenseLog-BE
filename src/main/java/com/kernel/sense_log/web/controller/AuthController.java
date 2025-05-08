@@ -8,6 +8,7 @@ import com.kernel.sense_log.domain.service.UserServiceImpl;
 import com.kernel.sense_log.web.dto.TokenResDTO;
 import com.kernel.sense_log.web.dto.UserReqDTO;
 import com.kernel.sense_log.web.dto.UserResDTO;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +42,14 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login", produces = "application/json")
-    public ResponseDTO<TokenResDTO> login(@RequestBody UserReqDTO userReqDTO) {
+    public ResponseDTO<?> login(@RequestBody UserReqDTO userReqDTO, HttpServletResponse response) {
         User user = userReqDTO.toEntity();
-        Map<String, Object> result = authService.login(user);
-        return ResponseDTO.ok(TokenResDTO.from(result));
+        String token = authService.login(user);
+        
+        // 쿠키 설정 - JwtUtil 클래스의 메서드 사용
+        jwtUtil.addTokenToCookie(response, token);
+        
+        // 데이터 없이 응답, 성공 상태만 반환
+        return ResponseDTO.ok();
     }
 }
