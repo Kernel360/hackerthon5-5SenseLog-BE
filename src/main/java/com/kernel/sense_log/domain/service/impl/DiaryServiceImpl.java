@@ -22,6 +22,7 @@ public class DiaryServiceImpl implements DiaryService {
   private final OpenAIService openAIService;
   @Override
   public Diary create(Diary diary) {
+
     Diary savedDiary = diaryRepository.save(diary);
     openAIService.makeTags(savedDiary.getId());
     openAIService.makeMessages(savedDiary.getId());
