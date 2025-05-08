@@ -20,6 +20,8 @@ public class DiaryServiceImpl implements DiaryService {
   private final DiaryRepository diaryRepository;
   private final SubTagRepository subTagRepository;
   private final OpenAIService openAIService;
+
+
   @Override
   public Diary create(Diary diary) {
 
@@ -56,9 +58,22 @@ public class DiaryServiceImpl implements DiaryService {
   }
 
   @Override
+  public Page<Diary> readAllByDay(LocalDate date, Pageable pageable) {
+    LocalDateTime start = date.atTime(5, 0);
+    LocalDateTime end = date.plusDays(1).atTime(5, 0);
+    return diaryRepository.findAllByCreatedAtBetween(start, end, pageable);
+  }
+
+  @Override
+  public Page<Diary> readAllByDateRange(LocalDate start, LocalDate end, Pageable pageable) {
+    LocalDateTime startDateTime = start.atTime(5, 0);
+    LocalDateTime endDateTime = end.plusDays(1).atTime(5, 0);
+    return diaryRepository.findAllByCreatedAtBetween(startDateTime, endDateTime, pageable);
+  }
+
+  @Override
   public Page<Diary> readAllMyDiary(Long userId, Pageable pageable) {
     return diaryRepository.findAllByWriterId(userId, pageable);
   }
-
 
 }
