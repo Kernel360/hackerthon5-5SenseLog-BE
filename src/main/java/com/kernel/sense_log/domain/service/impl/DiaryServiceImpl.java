@@ -3,6 +3,7 @@ package com.kernel.sense_log.domain.service.impl;
 import com.kernel.sense_log.domain.entity.Diary;
 import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import com.kernel.sense_log.domain.repository.DiaryRepository;
+import com.kernel.sense_log.domain.repository.SubTagRepository;
 import com.kernel.sense_log.domain.service.DiaryService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,12 +17,14 @@ import org.springframework.stereotype.Service;
 public class DiaryServiceImpl implements DiaryService {
 
   private final DiaryRepository diaryRepository;
+  private final SubTagRepository subTagRepository;
 
   @Override
   public Diary create(Diary diary) {
     // toDo: ai message, Tag 받기
-    diary.addAiMessage("ai message");
-    diary.addTag(Tag.기쁨);
+//    diary.addAiMessage("ai message");
+//    diary.addTag(Tag.기쁨);
+    diaryRepository.save(diary);
     return diaryRepository.save(diary);
   }
 
