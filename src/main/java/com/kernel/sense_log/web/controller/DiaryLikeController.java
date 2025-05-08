@@ -1,6 +1,6 @@
 package com.kernel.sense_log.web.controller;
 
-import com.kernel.sense_log.web.dto.DiaryLikeResDTO;
+import com.kernel.sense_log.web.dto.response.DiaryLikeResDTO;
 import com.kernel.sense_log.domain.service.DiaryLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -38,6 +38,7 @@ public class ResponseDTO<T> implements Serializable {
         return new ResponseDTO<>(ResultObject.getSuccess(), data);
     }
 
+
     public ResponseDTO(BaseException ex) {
         this.result = new ResultObject(ex);
     }
