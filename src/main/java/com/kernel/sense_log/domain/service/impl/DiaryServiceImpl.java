@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class DiaryServiceImpl implements DiaryService {
 
   private final DiaryRepository diaryRepository;
-  private final SubTagRepository subTagRepository;
   private final OpenAIService openAIService;
   @Override
   public Diary create(Diary diary) {
@@ -26,7 +25,7 @@ public class DiaryServiceImpl implements DiaryService {
     Diary savedDiary = diaryRepository.save(diary);
     openAIService.makeTags(savedDiary.getId());
     openAIService.makeMessages(savedDiary.getId());
-    return diaryRepository.save(diary);
+    return savedDiary;
   }
 
   @Override
