@@ -10,142 +10,120 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
+
     private final UserRepository userRepository;
 
-    // 터미널에 `openssl rand -hex 32` 명령어 입력시 랜덤한 값을 얻을수 있다.
-    private static final String secretKey = "c294d9d9ac58c5e3c816ccf1c185c745092ff30be8f4d72ba1d7a5d99d2e3aa5";
+    @Value("${env.secure-cookie}")
+    private boolean secureCookie;
 
-    private SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    private static final String SECRET_KEY = "c294d9d9ac58c5e3c816ccf1c185c745092ff30be8f4d72ba1d7a5d99d2e3aa5";
+    private static final long EXPIRATION_TIME_MS = 1000 * 60 * 60 * 24L; // 1일
+    private static final String USER_EMAIL_KEY = "userNo";
+    private static final String USER_NICKNAME_KEY = "userId";
+    private static final String USER_ID_KEY = "userIdNum";
 
-    private static final Long EXPIRATION_TIME_MS = 1000 * 60 * 60 * 24L; // 밀리세컨이라 1000 * 60초 * 60분 * 24시 => 하루
-    private static final String USER_EMAIL_KEY_NAME = "userNo";
-    private static final String USER_NICKNAME_KEY_NAME = "userId";
-    private static final String USER_ID_KEY_NAME = "userIdNum";
+    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     /**
-     * 액세스 토큰생성해주는 메서드
-     *   별일 없으면 이걸 사용하세요
-     * @param loginUser
-     * @return
+     * 액세스 토큰 생성
      */
-    public String createAccessToken(final User loginUser) {
-        return this.createAccessToken(loginUser, EXPIRATION_TIME_MS);
+    public String createAccessToken(User loginUser) {
+        return createAccessToken(loginUser, EXPIRATION_TIME_MS);
     }
 
-    /**
-     * 액세스 토큰생성해주는 메서드 (만료시간을 파라미터로 받는 오버로딩된 메서드)
-     *  굳이 만료시간을 다르게 가져가야할 경우만 사용하도록 오버로딩해둠
-     *  되도록이면  createAccessToken()를 사용해서 토큰생성바람
-     * @param loginUser
-     * @param expirationTimeMs
-     * @return
-     */
-    public String createAccessToken(final User loginUser, final long expirationTimeMs) {
-        // 디버깅을 위한 로그 추가
-        log.info("Creating token for user: {}", loginUser);
-        log.info("User ID being stored in token: {}", loginUser.getId());
-        
-        String token = Jwts.builder()
-                .claim(USER_EMAIL_KEY_NAME, loginUser.getEmail())
-                .claim(USER_NICKNAME_KEY_NAME, loginUser.getNickname())
-                .claim(USER_ID_KEY_NAME, loginUser.getId() != null ? loginUser.getId().toString() : null) // ID를 문자열로 저장
+    public String createAccessToken(User loginUser, long expirationTimeMs) {
+        log.info("Creating JWT for user: {} (ID: {})", loginUser.getEmail(), loginUser.getId());
+
+        return Jwts.builder()
+                .claim(USER_EMAIL_KEY, loginUser.getEmail())
+                .claim(USER_NICKNAME_KEY, loginUser.getNickname())
+                .claim(USER_ID_KEY, loginUser.getId() != null ? loginUser.getId().toString() : null)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationTimeMs))
                 .signWith(key)
                 .compact();
-        log.debug("created token : {} ", token);
-        return token;
     }
 
     /**
-     * 액세스 토큰에서 로그인유저정보 꺼내오기
-     * @param accessToken
-     * @return
+     * 토큰에서 유저 정보 추출
      */
-    public User getLoginUserFromAccessToken(final String accessToken) {
+    public User getLoginUserFromAccessToken(String accessToken) {
         Claims claims = getClaims(accessToken);
-        
-        // 디버깅을 위한 로그 추가
-        log.info("Claims from token: {}", claims);
-        
-        // 문자열로 가져와서 Long으로 변환
-        String userIdStr = claims.get(USER_ID_KEY_NAME, String.class);
-        log.info("User ID string from token: '{}'", userIdStr);
-        
+
+        String userIdStr = claims.get(USER_ID_KEY, String.class);
         Long userId = null;
+
         if (userIdStr != null) {
             try {
                 userId = Long.parseLong(userIdStr);
-                log.info("Parsed user ID: {}", userId);
             } catch (NumberFormatException e) {
-                log.warn("Failed to parse user ID from token: {}", userIdStr);
+                log.warn("Invalid userId format in token: {}", userIdStr);
             }
-        } else {
-            log.warn("User ID not found in token");
         }
-        
-        User user = new User(
-            claims.get(USER_EMAIL_KEY_NAME, String.class), 
-            claims.get(USER_NICKNAME_KEY_NAME, String.class),
-            userId
+
+        return new User(
+                claims.get(USER_EMAIL_KEY, String.class),
+                claims.get(USER_NICKNAME_KEY, String.class),
+                userId
         );
-        log.info("Created User object: {}", user);
-        
-        return user;
     }
 
     /**
-     * 토큰으로부터 클레임 꺼내기 (예외처리를 위해 별도 메서드로 분리시킴)
-     * @param accessToken
-     * @return
+     * 토큰에서 Claims 추출
      */
-    private Claims getClaims(final String accessToken) {
-        Claims claims ;
+    private Claims getClaims(String accessToken) {
         try {
-            claims = Jwts.parser()
-                    .verifyWith(key) // 단순히 key 타입만 검증하더라...
+            return Jwts.parser()
+                    .verifyWith(key)
                     .build()
                     .parseSignedClaims(accessToken)
                     .getPayload();
-        } catch(ExpiredJwtException eje) { // 만료된 토큰일 경우 발생하는 Exception
-            throw new ExpiredTokenException(); // 내가 만든 Exception으로 바꿔서 던짐 -> 리프레시토큰 로직으로 분기되어야함
-        } catch(Exception e) { // 기타 나머지(변조되었거나, 형식이 안맞거나 등등등)는 퉁쳐서 비정상 토큰으로 간주
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredTokenException();
+        } catch (Exception e) {
             throw new InvalidTokenException();
         }
-        return claims;
     }
 
-    // JwtUtil.java에 다음 메서드 추가
+    /**
+     * 쿠키에 토큰 저장
+     */
     public void addTokenToCookie(HttpServletResponse response, String token) {
-        Cookie cookie = new Cookie("AUTH_ACCESS_TOKEN", token);
-        cookie.setHttpOnly(true);  // JavaScript에서 접근 불가능하게 설정 (XSS 방지)
-        cookie.setSecure(false);   // 개발 환경에서는 HTTP도 허용 (프로덕션에서는 true로 변경)
-        cookie.setPath("/");       // 모든 경로에서 쿠키를 사용할 수 있도록 설정
+        log.debug("[JWT] 쿠키에 토큰 추가 시도");
 
-        // 토큰 만료 시간과 일치시키기
-        cookie.setMaxAge((int) (EXPIRATION_TIME_MS / 1000)); // 초 단위로 변환
+        String cookie = String.format(
+                "AUTH_ACCESS_TOKEN=%s; Path=/; HttpOnly; Max-Age=%d%s%s",
+                token,
+                EXPIRATION_TIME_MS / 1000,
+                secureCookie ? "; Secure" : "",
+                "; SameSite=None" // CORS 허용 필요시 강제
+        );
 
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", cookie);
     }
 
-    // 로그아웃을 위한 쿠키 삭제 메서드도 추가
+    /**
+     * 로그아웃용 쿠키 제거
+     */
     public void removeTokenFromCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie("AUTH_ACCESS_TOKEN", null);
-        cookie.setMaxAge(0);  // 즉시 만료
+        cookie.setMaxAge(0);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(false);  // 개발 환경에 맞게 설정
+        cookie.setSecure(secureCookie);
 
         response.addCookie(cookie);
     }
