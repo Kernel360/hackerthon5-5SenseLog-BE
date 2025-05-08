@@ -4,24 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Getter
-@Setter
-@ToString
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Pagination {
 
-  private Integer page;
+  private int page;
+  private int size;
+  private int currentElements;
+  private long totalElements;
+  private int totalPage;
 
-  private Integer size;
-
-  private Integer currentElements;
-
-  private Integer totalPage;
-
-  private Long totalElements;
 }
