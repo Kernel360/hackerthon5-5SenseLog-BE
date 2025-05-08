@@ -26,7 +26,7 @@ public class Diary extends BaseTimeEntity {
   @Column(nullable = false)
   private Boolean isPrivate;
 
-  @Column(nullable = false, length = 50)
+  @Column(nullable = false, length = 255)
   private String aiMessage;
 
   @Column(nullable = false)
