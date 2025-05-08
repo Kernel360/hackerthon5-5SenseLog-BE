@@ -2,8 +2,8 @@ spring:
   application:
     name: 5senselog
 
-    profiles:
-      active: local
+  profiles:
+    active: local
 
   datasource:
     driver-class-name: ${DB_DRIVER}
