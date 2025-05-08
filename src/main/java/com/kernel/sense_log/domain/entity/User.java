@@ -54,4 +54,8 @@ public class User extends BaseTimeEntity {
     this.email = email;
     this.nickname = nickname;
   }
+
+  public void initUserId(Long userId) {
+    this.id = userId;
+  }
 }

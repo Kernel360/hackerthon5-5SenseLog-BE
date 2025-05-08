@@ -6,11 +6,10 @@ import com.kernel.sense_log.domain.auth.jwt.JwtUtil;
 import com.kernel.sense_log.domain.entity.User;
 import com.kernel.sense_log.domain.service.AuthService;
 import com.kernel.sense_log.domain.service.UserServiceImpl;
-import com.kernel.sense_log.web.dto.TokenResDTO;
+import com.kernel.sense_log.web.dto.LoginResDTO;
 import com.kernel.sense_log.web.dto.UserReqDTO;
 import com.kernel.sense_log.web.dto.UserResDTO;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +44,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login", produces = "application/json")
-    public ResponseDTO<?> login(@RequestBody UserReqDTO userReqDTO, HttpServletResponse response) {
+    public ResponseDTO<LoginResDTO> login(@RequestBody UserReqDTO userReqDTO, HttpServletResponse response) {
         User user = userReqDTO.toEntity();
         String token = authService.login(user);
 
@@ -54,7 +53,7 @@ public class AuthController {
         }
 
         jwtUtil.addTokenToCookie(response, token);
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(LoginResDTO.from(user));
     }
 
 
