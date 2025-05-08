@@ -1,7 +1,7 @@
 package com.kernel.sense_log.domain.entity;
 
 import com.kernel.sense_log.common.entity.BaseTimeEntity;
-import com.kernel.sense_log.domain.entity.enumeration.emotion;
+import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +16,7 @@ public class DiaryLike extends BaseTimeEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private emotion emotionName;
+  private Tag emoji;
 
   @Column(nullable = false)
   private Long userId;

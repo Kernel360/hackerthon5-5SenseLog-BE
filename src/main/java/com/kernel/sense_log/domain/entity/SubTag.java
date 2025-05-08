@@ -1,6 +1,5 @@
 package com.kernel.sense_log.domain.entity;
 
-import com.kernel.sense_log.domain.entity.enumeration.subEmotion;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,10 +11,7 @@ public class SubTag {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private subEmotion subEmotion;
-
-    @Column(nullable = false)
-    private Boolean isMain;
+    private com.kernel.sense_log.domain.entity.enumeration.SubTag subTag;
 
     @Column(nullable = false)
     private Long diaryId;

@@ -1,6 +1,6 @@
 package com.kernel.sense_log.domain.entity.enumeration;
 
-public enum subEmotion {
+public enum SubTag {
     신나는,
     편안한,
     뿌듯한,
@@ -20,5 +20,5 @@ public enum subEmotion {
     짜증나는,
     피곤한,
     스트레스,
-    지루한;
+    지루한
 }
