@@ -37,4 +37,14 @@ public class User extends BaseTimeEntity {
     this.password = password;
     this.nickname = nickname;
   }
+
+  public void encodePassword(String encodePassword) {
+    this.password = encodePassword;
+  }
+
+  @Builder
+  public User(String email, String nickname) {
+    this.email = email;
+    this.nickname = nickname;
+  }
 }
