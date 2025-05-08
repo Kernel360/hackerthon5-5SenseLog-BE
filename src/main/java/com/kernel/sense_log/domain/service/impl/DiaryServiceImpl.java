@@ -39,7 +39,7 @@ public class DiaryServiceImpl implements DiaryService {
     return diaryRepository.findAllByTag(tag, pageable);
   }
 
-
+//퍼블릭 ,오블, 모두 조회
   @Override
   public Page<Diary> readAllByCustomDay(Pageable pageable) {
     LocalDateTime now = LocalDateTime.now();

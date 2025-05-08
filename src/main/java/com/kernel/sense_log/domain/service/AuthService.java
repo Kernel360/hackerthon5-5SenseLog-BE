@@ -17,7 +17,7 @@ public class AuthService {
     private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
 
-        public Map<String, Object> login(User user) {
+        public String login(User user) {
         User dbUser = userRepository.findByEmail(user.getEmail());
         
         if (dbUser == null) {
@@ -29,11 +29,6 @@ public class AuthService {
         }
 
         String token = jwtUtil.createAccessToken(dbUser);
-
-        // 결과 반환 - 토큰만 포함
-        Map<String, Object> result = new HashMap<>();
-        result.put("token", token);
-        // 사용자 정보 제외
-        return result;
+        return token;
     }
 }
