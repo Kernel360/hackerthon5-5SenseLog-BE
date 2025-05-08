@@ -40,8 +40,8 @@ public class Diary extends BaseTimeEntity {
     this.aiMessage = message;
   }
 
-  public void addTag(Tag tag) {
-    this.tag = tag;
+  public void addTag(String s){
+    this.tag = Tag.fromString(s);
   }
 
 }
