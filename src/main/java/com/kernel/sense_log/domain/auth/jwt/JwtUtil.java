@@ -27,8 +27,9 @@ public class JwtUtil {
     private SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
     private static final Long EXPIRATION_TIME_MS = 1000 * 60 * 60 * 24L; // 밀리세컨이라 1000 * 60초 * 60분 * 24시 => 하루
-    private static final String USER_NO_KEY_NAME = "userNo";
-    private static final String USER_ID_KEY_NAME = "userId";
+    private static final String USER_EMAIL_KEY_NAME = "userNo";
+    private static final String USER_NICKNAME_KEY_NAME = "userId";
+    private static final String USER_ID_KEY_NAME = "userIdNum";
 
     /**
      * 액세스 토큰생성해주는 메서드
@@ -49,9 +50,14 @@ public class JwtUtil {
      * @return
      */
     public String createAccessToken(final User loginUser, final long expirationTimeMs) {
+        // 디버깅을 위한 로그 추가
+        log.info("Creating token for user: {}", loginUser);
+        log.info("User ID being stored in token: {}", loginUser.getId());
+        
         String token = Jwts.builder()
-                .claim(USER_NO_KEY_NAME, loginUser.getEmail())
-                .claim(USER_ID_KEY_NAME, loginUser.getNickname())
+                .claim(USER_EMAIL_KEY_NAME, loginUser.getEmail())
+                .claim(USER_NICKNAME_KEY_NAME, loginUser.getNickname())
+                .claim(USER_ID_KEY_NAME, loginUser.getId() != null ? loginUser.getId().toString() : null) // ID를 문자열로 저장
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationTimeMs))
                 .signWith(key)
@@ -67,7 +73,34 @@ public class JwtUtil {
      */
     public User getLoginUserFromAccessToken(final String accessToken) {
         Claims claims = getClaims(accessToken);
-        return new User(claims.get(USER_NO_KEY_NAME, String.class), claims.get(USER_ID_KEY_NAME, String.class));
+        
+        // 디버깅을 위한 로그 추가
+        log.info("Claims from token: {}", claims);
+        
+        // 문자열로 가져와서 Long으로 변환
+        String userIdStr = claims.get(USER_ID_KEY_NAME, String.class);
+        log.info("User ID string from token: '{}'", userIdStr);
+        
+        Long userId = null;
+        if (userIdStr != null) {
+            try {
+                userId = Long.parseLong(userIdStr);
+                log.info("Parsed user ID: {}", userId);
+            } catch (NumberFormatException e) {
+                log.warn("Failed to parse user ID from token: {}", userIdStr);
+            }
+        } else {
+            log.warn("User ID not found in token");
+        }
+        
+        User user = new User(
+            claims.get(USER_EMAIL_KEY_NAME, String.class), 
+            claims.get(USER_NICKNAME_KEY_NAME, String.class),
+            userId
+        );
+        log.info("Created User object: {}", user);
+        
+        return user;
     }
 
     /**
