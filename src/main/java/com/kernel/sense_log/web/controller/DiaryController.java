@@ -4,13 +4,16 @@ import com.kernel.sense_log.common.api.Pagination;
 import com.kernel.sense_log.common.dto.ResponseDTO;
 import com.kernel.sense_log.domain.entity.Diary;
 import com.kernel.sense_log.domain.entity.SubTag;
+import com.kernel.sense_log.domain.entity.User;
 import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import com.kernel.sense_log.domain.service.SubTagService;
+import com.kernel.sense_log.domain.service.UserService;
 import com.kernel.sense_log.domain.service.impl.DiaryServiceImpl;
 import com.kernel.sense_log.web.dto.request.DiaryReqDto;
 import com.kernel.sense_log.web.dto.response.DiaryResDto;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,15 +35,18 @@ public class DiaryController {
 
   private final DiaryServiceImpl diaryService;
   private final SubTagService subTagService;
+  private final UserService userService;
 
   @PostMapping
   public ResponseDTO<DiaryResDto> create(
       Long userId,
       @Valid @RequestBody DiaryReqDto diaryRequestDto) {
+    userId=1L;
     Diary diary = diaryService.create(
             DiaryReqDto.toEntity(userId, diaryRequestDto));
     List<SubTag> subTags = subTagService.findAllSubTags(diary.getId());
-    return ResponseDTO.ok(DiaryResDto.toDto(diary, subTags));
+    Optional<User> user = userService.findById(userId);
+    return ResponseDTO.ok(DiaryResDto.toDto(diary, user, subTags));
   }
 
   @DeleteMapping("/{diaryId}")
@@ -89,7 +95,7 @@ public class DiaryController {
     List<DiaryResDto> dtoDiaries = diaries.stream()
             .map(diary -> {
               List<SubTag> subTags = subTagService.findAllSubTags(diary.getId());
-                return DiaryResDto.toDto(diary, subTags);
+                return DiaryResDto.toDto(diary, userService.findById(diary.getWriterId()), subTags);
             })
             .collect(Collectors.toList());
 
