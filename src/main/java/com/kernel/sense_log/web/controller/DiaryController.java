@@ -74,6 +74,14 @@ public class DiaryController {
     return pageToDto(diaryService.readAllByCustomDay(pageable));
   }
 
+  @GetMapping("/all/today/tag")
+  public ResponseDTO<List<DiaryResDto>> readAllByTodayAndTag(
+          @RequestParam(name = "tag") Tag tag,
+          @PageableDefault
+          Pageable pageable) {
+    return pageToDto(diaryService.readAllByTodayAndTag(pageable, tag));
+  }
+
   @GetMapping("/mine")
   public ResponseDTO<List<DiaryResDto>> readAllMyDiary(
       User user,

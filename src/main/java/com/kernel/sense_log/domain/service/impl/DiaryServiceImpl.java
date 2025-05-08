@@ -75,4 +75,16 @@ public class DiaryServiceImpl implements DiaryService {
     return diaryRepository.findAllByWriterId(userId, pageable);
   }
 
+  public Page<Diary> readAllByTodayAndTag(Pageable pageable, Tag tag) {
+    LocalDateTime now = LocalDateTime.now();
+    LocalDate today = now.toLocalDate();
+
+    LocalDate baseDate = now.isBefore(today.atTime(5, 0))
+            ? today.minusDays(1)
+            : today;
+
+    LocalDateTime start = baseDate.atTime(5, 0);
+    LocalDateTime end = baseDate.plusDays(1).atTime(5, 0);
+    return diaryRepository.findByTagAndCreatedAtBetween(tag, start, end, pageable);
+  }
 }
