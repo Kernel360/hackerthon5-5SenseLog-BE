@@ -30,10 +30,10 @@ public class DiaryController {
 
   @PostMapping
   public ResponseDTO<DiaryResDto> create(
-//      Long userId,
+      Long userId,
       @Valid @RequestBody DiaryReqDto diaryRequestDto) {
     return ResponseDTO.ok(DiaryResDto.toDto(diaryService.create(
-        DiaryReqDto.toEntity(1L, diaryRequestDto))));
+        DiaryReqDto.toEntity(userId, diaryRequestDto))));
   }
 
   @DeleteMapping("/{diaryId}")
