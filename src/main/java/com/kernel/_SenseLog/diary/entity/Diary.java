@@ -11,9 +11,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.aspectj.apache.bcel.generic.Tag;
 
+@Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "diaries")
 public class Diary extends BaseTimeEntity {
 
