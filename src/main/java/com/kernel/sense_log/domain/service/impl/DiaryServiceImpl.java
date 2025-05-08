@@ -24,7 +24,6 @@ public class DiaryServiceImpl implements DiaryService {
     // toDo: ai message, Tag 받기
 //    diary.addAiMessage("ai message");
 //    diary.addTag(Tag.기쁨);
-    diaryRepository.save(diary);
     return diaryRepository.save(diary);
   }
 

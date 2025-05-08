@@ -28,7 +28,6 @@ public class AuthController {
 
     @GetMapping(value = "/me", produces = "application/json")
     public ResponseEntity<UserResDTO> loginCheck(final User loginUser) {
-        log.debug("loginUser : {} ", loginUser);
         return ResponseEntity.ok(UserResDTO.from(loginUser));
     }
 
