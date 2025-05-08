@@ -1,12 +1,10 @@
 package com.kernel.sense_log.web.dto.request;
 
 import com.kernel.sense_log.domain.entity.Diary;
-import com.kernel.sense_log.web.dto.response.DiaryResDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
