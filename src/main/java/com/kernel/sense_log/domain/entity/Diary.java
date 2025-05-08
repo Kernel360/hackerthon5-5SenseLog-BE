@@ -3,11 +3,15 @@ package com.kernel.sense_log.domain.entity;
 import com.kernel.sense_log.common.entity.BaseTimeEntity;
 import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "diaries")
 public class Diary extends BaseTimeEntity {
@@ -22,16 +26,22 @@ public class Diary extends BaseTimeEntity {
   @Column(nullable = false)
   private Boolean isPrivate;
 
-  @Column(length = 255)
+  @Column(nullable = false, length = 50)
   private String aiMessage;
 
   @Column(nullable = false)
-  private Long userId;
+  private Long writerId;
 
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
   private Tag tag;
 
-  public void updateAiMessage(String s){
-    this.aiMessage = s;
+  public void addAiMessage(String message) {
+    this.aiMessage = message;
   }
+
+  public void addTag(Tag tag) {
+    this.tag = tag;
+  }
+
 }

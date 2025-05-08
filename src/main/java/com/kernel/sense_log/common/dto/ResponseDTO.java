@@ -1,6 +1,7 @@
 package com.kernel.sense_log.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.kernel.sense_log.common.api.Pagination;
 import com.kernel.sense_log.common.exception.BaseException;
 import lombok.*;
 
@@ -18,6 +19,8 @@ public class ResponseDTO<T> implements Serializable {
 
     private T data;
 
+    private Pagination pagination;
+
     public ResponseDTO(ResultObject result) {
         this.result = result;
     }
@@ -31,12 +34,17 @@ public class ResponseDTO<T> implements Serializable {
     }
 
     public static <T> ResponseDTO<T> ok(T data) {
-        return new ResponseDTO<>(ResultObject.getSuccess(), data);
+        return new ResponseDTO<>(ResultObject.getSuccess(), data, null);
+    }
+
+    public static <T> ResponseDTO<T> ok(T data, Pagination pagination) {
+        return new ResponseDTO<>(ResultObject.getSuccess(), data, pagination);
     }
 
     public static <T> ResponseDTO<T> response(T data) {
-        return new ResponseDTO<>(ResultObject.getSuccess(), data);
+        return new ResponseDTO<>(ResultObject.getSuccess(), data, null);
     }
+
 
     public ResponseDTO(BaseException ex) {
         this.result = new ResultObject(ex);
