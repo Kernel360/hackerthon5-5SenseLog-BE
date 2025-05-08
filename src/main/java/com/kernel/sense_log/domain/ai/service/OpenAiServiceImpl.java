@@ -12,6 +12,7 @@ import com.kernel.sense_log.domain.repository.SubTagRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class OpenAiServiceImpl implements OpenAIService {
         return new HttpEntity<>(chatRequest, headers);
     }
 
+    @Async
     @Override
     public void makeMessages(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(() -> new BaseException(ResultType.DIARY_NOT_FOUND));
@@ -75,6 +77,7 @@ public class OpenAiServiceImpl implements OpenAIService {
         diaryRepository.save(diary);
     }
 
+    @Async
     @Override
     public void makeTags(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(() -> new BaseException(ResultType.DIARY_NOT_FOUND));
