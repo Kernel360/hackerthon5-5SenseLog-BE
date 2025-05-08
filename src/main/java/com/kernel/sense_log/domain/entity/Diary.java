@@ -1,12 +1,8 @@
 package com.kernel.sense_log.domain.entity;
 
 import com.kernel.sense_log.common.entity.BaseTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.kernel.sense_log.domain.entity.enumeration.Tag;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,5 +28,8 @@ public class Diary extends BaseTimeEntity {
   @Column(nullable = false)
   private Long userId;
 
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private Tag tag;
 
 }
