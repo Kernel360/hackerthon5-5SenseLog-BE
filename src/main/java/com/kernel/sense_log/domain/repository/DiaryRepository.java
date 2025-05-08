@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
@@ -14,4 +17,13 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
   Page<Diary> findAllByCreatedAtBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
 
   Page<Diary> findAllByWriterId(Long userId, Pageable pageable);
+
+  @Modifying
+  @Query("update Diary d set d.aiMessage = :aiMessage where d.id = :id")
+  void updateAiMessage(@Param("id") Long id, @Param("aiMessage") String aiMessage);
+
+  @Modifying
+  @Query("update Diary d set d.tag = :tag where d.id = :id")
+  void updateTag(@Param("id") Long id, @Param("tag") Tag tag);
+
 }

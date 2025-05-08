@@ -35,12 +35,4 @@ public class Diary extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private Tag tag;
 
-  public void addAiMessage(String message) {
-    this.aiMessage = message;
-  }
-
-  public void addTag(String s){
-    this.tag = Tag.fromString(s);
-  }
-
 }

@@ -7,8 +7,10 @@ import com.kernel.sense_log.domain.ai.dto.MakeMessageReqDTO;
 import com.kernel.sense_log.domain.ai.dto.MakeTagReqDTO;
 import com.kernel.sense_log.domain.entity.Diary;
 import com.kernel.sense_log.domain.entity.SubTag;
+import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import com.kernel.sense_log.domain.repository.DiaryRepository;
 import com.kernel.sense_log.domain.repository.SubTagRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +43,7 @@ public class OpenAiServiceImpl implements OpenAIService {
     }
 
     @Async
+    @Transactional
     @Override
     public void makeMessages(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(() -> new BaseException(ResultType.DIARY_NOT_FOUND));
@@ -73,11 +76,11 @@ public class OpenAiServiceImpl implements OpenAIService {
         if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
             throw new RuntimeException();
         }
-        diary.addAiMessage(response.getChoices().get(0).getMessage().getContent());
-        diaryRepository.save(diary);
+        diaryRepository.updateAiMessage(diaryId, response.getChoices().get(0).getMessage().getContent());
     }
 
     @Async
+    @Transactional
     @Override
     public void makeTags(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(() -> new BaseException(ResultType.DIARY_NOT_FOUND));
@@ -112,9 +115,7 @@ public class OpenAiServiceImpl implements OpenAIService {
 
         String[] emotions = content.split(",\\s*"); // 쉼표+공백 기준으로 분리
 
-        String mainEmotion = emotions[0].trim();
-        diary.addTag(mainEmotion);
-        diaryRepository.save(diary);
+        diaryRepository.updateTag(diaryId, Tag.fromString(emotions[0].trim()));
 
         for (int i = 1; i < emotions.length; i++) {
             String subEmotion = emotions[i].trim();
