@@ -71,7 +71,7 @@ public class OpenAiServiceImpl implements OpenAIService {
         if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
             throw new RuntimeException();
         }
-        diary.updateAiMessage(response.getChoices().get(0).getMessage().getContent());
+        diary.addAiMessage(response.getChoices().get(0).getMessage().getContent());
         diaryRepository.save(diary);
     }
 

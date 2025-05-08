@@ -1,5 +1,6 @@
 package com.kernel.sense_log.web.controller;
 
+import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import com.kernel.sense_log.web.dto.DiaryLikeResDTO;
 import com.kernel.sense_log.domain.service.DiaryLikeService;
 import lombok.RequiredArgsConstructor;
@@ -13,14 +14,15 @@ public class DiaryLikeController {
 
     private final DiaryLikeService diaryLikeService;
 
-    // ✅ 좋아요 토글 (추가 or 취소)
     @PostMapping
-    public ResponseEntity<DiaryLikeResDTO> toggleLike(
+    public ResponseEntity<DiaryLikeResDTO> reactEmotion(
             @PathVariable Long diaryId,
-            @RequestParam Long userId
+            @RequestParam Long userId,
+            @RequestParam Tag emotion  
     ) {
-        DiaryLikeResDTO response = diaryLikeService.toggleLike(userId, diaryId);
+        System.out.println( emotion);
+        DiaryLikeResDTO response = diaryLikeService.saveOrUpdateEmotion(userId, diaryId, emotion);
         return ResponseEntity.ok(response);
     }
-
 }
+
