@@ -56,5 +56,10 @@ public class AuthController {
         return ResponseDTO.ok(LoginResDTO.from(user));
     }
 
+    @PostMapping(value = "/logout", produces = "application/json")
+    public ResponseDTO<?> logout(HttpServletResponse response) {
+        jwtUtil.removeTokenFromCookie(response);
+        return ResponseDTO.ok();
+    }
 
 }
