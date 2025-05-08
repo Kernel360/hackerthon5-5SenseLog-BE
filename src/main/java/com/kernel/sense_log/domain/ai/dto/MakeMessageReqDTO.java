@@ -6,19 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class MakeTagReqDTO {
+public class MakeMessageReqDTO {
     private String model;
     private List<MessageDTO> messages;
     private int n;
     private double temperature;
 
-    public MakeTagReqDTO(String model, String prompt) {
+    public MakeMessageReqDTO(String model, String prompt) {
         this.model = model;
 
         this.messages = new ArrayList<>();
+        this.messages.add(new MessageDTO("system", "당신은 공감 능력이 뛰어난 따뜻한 상담사입니다."));
         this.messages.add(new MessageDTO("user", prompt));
 
         this.n = 1;
-        this.temperature = 0.5;
+        this.temperature = 0.75;
     }
 }

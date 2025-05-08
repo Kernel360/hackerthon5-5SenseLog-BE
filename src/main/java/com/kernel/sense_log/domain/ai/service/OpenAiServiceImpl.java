@@ -1,7 +1,11 @@
 package com.kernel.sense_log.domain.ai.service;
 
+import com.kernel.sense_log.common.exception.BaseException;
+import com.kernel.sense_log.common.exception.ResultType;
 import com.kernel.sense_log.domain.ai.dto.AiResDTO;
 import com.kernel.sense_log.domain.ai.dto.MakeTagReqDTO;
+import com.kernel.sense_log.domain.entity.Diary;
+import com.kernel.sense_log.domain.repository.DiaryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -21,7 +25,9 @@ public class OpenAiServiceImpl implements OpenAIService{
     @Value("${openai.api.key}")
     private String openaiApiKey;
 
-    private HttpEntity<MakeTagReqDTO> getHttpEntity(MakeTagReqDTO chatRequest) {
+    private final DiaryRepository diaryRepository;
+
+    private <T>HttpEntity<T> getHttpEntity(T chatRequest) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         headers.set("Authorization", "Bearer " + openaiApiKey);
@@ -29,17 +35,39 @@ public class OpenAiServiceImpl implements OpenAIService{
         return new HttpEntity<>(chatRequest, headers);
     }
     @Override
-    public String makeMessages(String diaryContent) {
+    public void makeMessages(Long diaryId) {
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow(()-> new BaseException(ResultType.DIARY_NOT_FOUND));
+
         RestTemplate restTemplate = new RestTemplate();
-        MakeTagReqDTO request = new MakeTagReqDTO(model, "오늘은 기분이 안좋은 하루였어");
+
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("당신은 마음이 따뜻한 상담가입니다. ")
+                .append("당신의 역할은 사용자의 감정을 깊이 공감하고, 위로의 말을 건네는 것입니다. ")
+                .append("사용자는 감정이 담긴 한 줄 일기를 남깁니다. ")
+                .append("당신은 사용자의 감정을 섬세하게 이해하고, 진심 어린 따뜻한 말로 위로해주세요. ")
+                .append("훈계를 하기 보다든, 사용자의 감정을 있는 그대로 받아들이고 공감하며, 가벼운 조언을 제안하는 말투를 사용해주세요. ")
+                .append("말투는 다정한 존댓말이며, 친구처럼 다가가되 위엄이 느껴지지 않도록 해주세요.\n\n")
+                .append("2~3줄 분량으로 위로해주세요.\n\n")
+
+                .append("예시:\n")
+                .append("[한줄일기]: 오늘도 혼자 밥 먹었어.\n")
+                .append("[응답]: 혼자 밥 먹는 시간이 유난히 길게 느껴졌을 것 같아요. 그 외로움을 잘 견뎌낸 당신이 참 대단해요.\n\n")
+                .append("[한줄일기]: 하루 종일 눈물이 났어.\n")
+                .append("[응답]: 얼마나 마음이 아프셨을까요. 그런 하루를 잘 이겨낸 당신이 참 자랑스러워요.\n\n")
+
+                .append("[한줄일기]: ").append(diary.getContent()).append("\n")
+                .append("[응답]:");
+
+        MakeTagReqDTO request = new MakeTagReqDTO(model, sb.toString());
 
         AiResDTO response = restTemplate.postForObject(apiUrl, getHttpEntity(request), AiResDTO.class);
 
         if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
             throw new RuntimeException();
         }
-
-        return response.getChoices().get(0).getMessage().getContent();
+        diary.updateAiMessage(response.getChoices().get(0).getMessage().getContent());
+        diaryRepository.save(diary);
     }
 
     @Override
