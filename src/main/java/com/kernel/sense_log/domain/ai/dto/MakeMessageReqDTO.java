@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class MakeTagReqDTO {
+public class MakeMessageReqDTO {
     private String model;
     private List<MessageDTO> messages;
     private int n;
     private double temperature;
 
-    public MakeTagReqDTO(String model, String prompt) {
+    public MakeMessageReqDTO(String model, String prompt) {
         this.model = model;
 
         this.messages = new ArrayList<>();
