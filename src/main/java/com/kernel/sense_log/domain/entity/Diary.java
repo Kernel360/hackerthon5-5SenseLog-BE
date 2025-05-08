@@ -26,14 +26,13 @@ public class Diary extends BaseTimeEntity {
   @Column(nullable = false)
   private Boolean isPrivate;
 
-  @Column(nullable = false, length = 255)
+  @Column(length = 255)
   private String aiMessage;
 
   @Column(nullable = false)
   private Long writerId;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
   private Tag tag;
 
   public void addAiMessage(String message) {

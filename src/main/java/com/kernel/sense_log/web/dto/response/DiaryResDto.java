@@ -2,7 +2,6 @@ package com.kernel.sense_log.web.dto.response;
 
 import com.kernel.sense_log.domain.entity.Diary;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +32,12 @@ public class DiaryResDto {
     List<String> subTags = originSubTags.stream()
             .map(subTag -> subTag.getSubTag().toString())
             .collect(Collectors.toList());
+    String tagString = diary.getTag() != null ? diary.getTag().toString() : null;
 
     return DiaryResDto.builder().id(diary.getId()).content(diary.getContent())
         .isPrivate(diary.getIsPrivate()).aiMessage(diary.getAiMessage())
         .writerId(diary.getWriterId()).createAt(diary.getCreatedAt()).updateAt(diary.getUpdatedAt())
-            .tag(diary.getTag().toString()).subTags(subTags)
+            .tag(tagString).subTags(subTags)
         .build();
   }
 

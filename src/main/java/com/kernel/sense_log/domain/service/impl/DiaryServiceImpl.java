@@ -1,5 +1,6 @@
 package com.kernel.sense_log.domain.service.impl;
 
+import com.kernel.sense_log.domain.ai.service.OpenAIService;
 import com.kernel.sense_log.domain.entity.Diary;
 import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import com.kernel.sense_log.domain.repository.DiaryRepository;
@@ -18,12 +19,12 @@ public class DiaryServiceImpl implements DiaryService {
 
   private final DiaryRepository diaryRepository;
   private final SubTagRepository subTagRepository;
-
+  private final OpenAIService openAIService;
   @Override
   public Diary create(Diary diary) {
-    // toDo: ai message, Tag 받기
-//    diary.addAiMessage("ai message");
-//    diary.addTag(Tag.기쁨);
+    Diary savedDiary = diaryRepository.save(diary);
+    openAIService.makeTags(savedDiary.getId());
+    openAIService.makeMessages(savedDiary.getId());
     return diaryRepository.save(diary);
   }
 
