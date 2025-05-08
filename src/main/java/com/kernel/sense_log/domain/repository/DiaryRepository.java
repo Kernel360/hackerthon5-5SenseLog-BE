@@ -18,6 +18,8 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
   Page<Diary> findAllByWriterId(Long userId, Pageable pageable);
 
+  Page<Diary> findByTagAndCreatedAtBetween(Tag tag, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
   @Modifying
   @Query("update Diary d set d.aiMessage = :aiMessage where d.id = :id")
   void updateAiMessage(@Param("id") Long id, @Param("aiMessage") String aiMessage);
@@ -25,5 +27,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
   @Modifying
   @Query("update Diary d set d.tag = :tag where d.id = :id")
   void updateTag(@Param("id") Long id, @Param("tag") Tag tag);
+
 
 }
