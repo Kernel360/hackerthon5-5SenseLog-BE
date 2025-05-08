@@ -17,7 +17,7 @@ public enum ResultType {
     //groupMember
 
     //user
-
+    USER_NOT_FOUND("404", "사용자를 찾을 수 없습니다"),
     //공통
     OK("200", "success"),
     CREATED("201", "created"),
