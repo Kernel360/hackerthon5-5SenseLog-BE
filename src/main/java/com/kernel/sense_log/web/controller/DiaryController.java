@@ -28,7 +28,7 @@ public class DiaryController {
 
   @PostMapping
   public ResponseDTO<DiaryResDto> create(
-//      Long userId,
+      Long userId,
       @Valid @RequestBody DiaryReqDto diaryRequestDto) {
     return ResponseDTO.ok(DiaryResDto.toDto(diaryService.create(
         DiaryReqDto.toEntity(1L, diaryRequestDto))));
@@ -61,10 +61,10 @@ public class DiaryController {
 
   @GetMapping("/mine")
   public ResponseDTO<List<DiaryResDto>> readAllMyDiary(
-//      Long myId,
+      Long myId,
       @PageableDefault
       Pageable pageable
   ) {
-    return diaryService.readAllMyDiary(1L, pageable);
+    return diaryService.readAllMyDiary(myId, pageable);
   }
 }
