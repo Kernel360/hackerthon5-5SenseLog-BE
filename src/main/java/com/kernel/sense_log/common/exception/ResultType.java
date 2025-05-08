@@ -9,7 +9,7 @@ public enum ResultType {
 
     //도메인별로 나누기
     //diary
-
+    DIARY_NOT_FOUND("404", "다이어리를 찾을 수 없습니다."),
     //diaryLike
 
     //group

@@ -14,7 +14,7 @@ public class OpenAIController {
     public final OpenAIService openAIService;
 
     @GetMapping
-    public String func(){
-        return openAIService.makeMessages("");
+    public void func(){
+        openAIService.makeMessages(2L);
     }
 }

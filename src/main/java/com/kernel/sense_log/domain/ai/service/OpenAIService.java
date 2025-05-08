@@ -1,6 +1,6 @@
 package com.kernel.sense_log.domain.ai.service;
 
 public interface OpenAIService {
-    String makeMessages(String diaryContent);
+    void makeMessages(Long diaryId);
     void makeTags(String diaryContent);
 }
