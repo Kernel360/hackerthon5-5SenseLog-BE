@@ -2,9 +2,13 @@ package com.kernel.sense_log.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "sub_tags")
+@Getter
+@NoArgsConstructor
 public class SubTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
