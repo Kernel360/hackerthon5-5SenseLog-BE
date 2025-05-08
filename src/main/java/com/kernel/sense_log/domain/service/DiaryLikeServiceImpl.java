@@ -22,7 +22,7 @@ public class DiaryLikeServiceImpl implements DiaryLikeService {
 
         if (emotion == null) {
             existing.ifPresent(diaryLikeRepository::delete);
-            return new DiaryLikeResDTO(userId, diaryId, null); // 감정 삭제 응답
+            return new DiaryLikeResDTO(userId, diaryId, null); 
         }
 
         DiaryLike savedLike;
