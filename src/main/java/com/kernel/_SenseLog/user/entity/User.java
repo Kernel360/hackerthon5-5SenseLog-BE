@@ -8,7 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
 @Table(name = "users")
@@ -27,4 +32,10 @@ public class User extends BaseTimeEntity {
   @Column(nullable = false, length = 50)
   private String nickname;
 
+  @Builder
+  public User(String email, String password, String nickname) {
+    this.email = email;
+    this.password = password;
+    this.nickname = nickname;
+  }
 }
