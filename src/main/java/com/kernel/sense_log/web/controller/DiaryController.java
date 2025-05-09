@@ -6,8 +6,10 @@ import com.kernel.sense_log.domain.entity.Diary;
 import com.kernel.sense_log.domain.entity.SubTag;
 import com.kernel.sense_log.domain.entity.User;
 import com.kernel.sense_log.domain.entity.enumeration.Tag;
+import com.kernel.sense_log.domain.service.DiaryLikeService;
 import com.kernel.sense_log.domain.service.SubTagService;
 import com.kernel.sense_log.domain.service.UserService;
+import com.kernel.sense_log.domain.service.impl.DiaryLikeServiceImpl;
 import com.kernel.sense_log.domain.service.impl.DiaryServiceImpl;
 import com.kernel.sense_log.web.dto.request.DiaryReqDto;
 import com.kernel.sense_log.web.dto.response.DiaryResDto;
@@ -38,6 +40,7 @@ public class DiaryController {
   private final DiaryServiceImpl diaryService;
   private final SubTagService subTagService;
   private final UserService userService;
+  private final DiaryLikeServiceImpl diaryLikeService;
 
   @PostMapping
   public ResponseDTO<DiaryResDto> create(
@@ -60,26 +63,32 @@ public class DiaryController {
 
   @GetMapping("/all")
   public ResponseDTO<List<DiaryResDto>> readAllByTag(
+      User user,
       @RequestParam(name = "tag") Tag tag,
       @PageableDefault
       Pageable pageable
   ) {
-    return pageToDto(diaryService.readAllByTag(pageable, tag));
+    Long userId = user.getId();
+    return pageToDto(diaryService.readAllByTag(pageable, tag), userId);
   }
 
   @GetMapping("/all/today")
   public ResponseDTO<List<DiaryResDto>> readAllByCustomDay(
+      User user,
       @PageableDefault
       Pageable pageable) {
-    return pageToDto(diaryService.readAllByCustomDay(pageable));
+    Long userId = user.getId();
+    return pageToDto(diaryService.readAllByCustomDay(pageable), userId);
   }
 
   @GetMapping("/all/today/tag")
   public ResponseDTO<List<DiaryResDto>> readAllByTodayAndTag(
+      User user,
           @RequestParam(name = "tag") Tag tag,
           @PageableDefault
           Pageable pageable) {
-    return pageToDto(diaryService.readAllByTodayAndTag(pageable, tag));
+    Long userId = user.getId();
+    return pageToDto(diaryService.readAllByTodayAndTag(pageable, tag), userId);
   }
 
   @GetMapping("/mine")
@@ -89,25 +98,25 @@ public class DiaryController {
       Pageable pageable
   ) {
     Long userId = user.getId();
-    return pageToDto(diaryService.readAllMyDiary(userId, pageable));
+    return pageToDto(diaryService.readAllMyDiary(userId, pageable), userId);
   }
 
-  @GetMapping("/day")
-  public ResponseDTO<List<DiaryResDto>> readDiariesByDay(
-      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-      @PageableDefault Pageable pageable
-  ) {
-    return pageToDto(diaryService.readAllByDay(date, pageable));
-  }
-
-  @GetMapping("/range")
-  public ResponseDTO<List<DiaryResDto>> getDiariesByRange(
-      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
-      @PageableDefault Pageable pageable
-  ) {
-    return pageToDto(diaryService.readAllByDateRange(start, end, pageable));
-  }
+//  @GetMapping("/day")
+//  public ResponseDTO<List<DiaryResDto>> readDiariesByDay(
+//      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+//      @PageableDefault Pageable pageable
+//  ) {
+//    return pageToDto(diaryService.readAllByDay(date, pageable));
+//  }
+//
+//  @GetMapping("/range")
+//  public ResponseDTO<List<DiaryResDto>> getDiariesByRange(
+//      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+//      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
+//      @PageableDefault Pageable pageable
+//  ) {
+//    return pageToDto(diaryService.readAllByDateRange(start, end, pageable));
+//  }
 
   @GetMapping("/mine/day")
   public ResponseDTO<DiaryResDto> readDiaryByIdAndDay(
@@ -117,7 +126,8 @@ public class DiaryController {
     Long userId = user.getId();
     Diary diary = diaryService.readDiaryByIdAndDay(date, userId);
     List<SubTag> subTags = subTagService.findAllSubTags(diary.getId());
-    return ResponseDTO.ok(DiaryResDto.toDto(diary, Optional.of(user), subTags));
+    Tag emoji = diaryLikeService.getEmoji(userId, diary.getId());
+    return ResponseDTO.ok(DiaryResDto.toDto(diary, Optional.of(user), subTags, emoji));
   }
 
   @GetMapping("/mine/range")
@@ -128,10 +138,10 @@ public class DiaryController {
       @PageableDefault Pageable pageable
   ) {
     Long userId = user.getId();
-    return pageToDto(diaryService.readAllByIdAndDateRange(userId, start, end, pageable));
+    return pageToDto(diaryService.readAllByIdAndDateRange(userId, start, end, pageable), userId);
   }
 
-  private ResponseDTO<List<DiaryResDto>> pageToDto(Page<Diary> diaries) {
+  private ResponseDTO<List<DiaryResDto>> pageToDto(Page<Diary> diaries, Long userId) {
     Pagination pagination = Pagination.builder()
         .page(diaries.getNumber())
         .size(diaries.getSize())
@@ -144,7 +154,8 @@ public class DiaryController {
     List<DiaryResDto> dtoDiaries = diaries.stream()
             .map(diary -> {
               List<SubTag> subTags = subTagService.findAllSubTags(diary.getId());
-                return DiaryResDto.toDto(diary, userService.findById(diary.getWriterId()), subTags);
+              Tag emoji = diaryLikeService.getEmoji(userId, diary.getId());
+                return DiaryResDto.toDto(diary, userService.findById(diary.getWriterId()), subTags, emoji);
             })
             .collect(Collectors.toList());
 
