@@ -4,7 +4,6 @@ import com.kernel.sense_log.domain.ai.service.OpenAIService;
 import com.kernel.sense_log.domain.entity.Diary;
 import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import com.kernel.sense_log.domain.repository.DiaryRepository;
-import com.kernel.sense_log.domain.repository.SubTagRepository;
 import com.kernel.sense_log.domain.service.DiaryService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -68,6 +67,21 @@ public class DiaryServiceImpl implements DiaryService {
     LocalDateTime startDateTime = start.atTime(5, 0);
     LocalDateTime endDateTime = end.plusDays(1).atTime(5, 0);
     return diaryRepository.findAllByCreatedAtBetween(startDateTime, endDateTime, pageable);
+  }
+
+  @Override
+  public Diary readDiaryByIdAndDay(LocalDate date, Long userId) {
+    LocalDateTime start = date.atTime(5, 0);
+    LocalDateTime end = date.plusDays(1).atTime(5, 0);
+    return diaryRepository.findByWriterIdAndCreatedAtBetween(userId, start, end);
+  }
+
+  @Override
+  public Page<Diary> readAllByIdAndDateRange(Long userId, LocalDate start, LocalDate end,
+      Pageable pageable) {
+    LocalDateTime startDateTime = start.atTime(5, 0);
+    LocalDateTime endDateTime = end.plusDays(1).atTime(5, 0);
+    return diaryRepository.findAllByWriterIdAndCreatedAtBetween(userId, startDateTime, endDateTime, pageable);
   }
 
   @Override
