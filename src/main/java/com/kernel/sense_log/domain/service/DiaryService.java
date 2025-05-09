@@ -21,4 +21,8 @@ public interface DiaryService {
   Page<Diary> readAllByDay(LocalDate date, Pageable pageable);
 
   Page<Diary> readAllByDateRange(LocalDate start, LocalDate end, Pageable pageable);
+
+  Diary readDiaryByIdAndDay(LocalDate date, Long userId);
+
+  Page<Diary> readAllByIdAndDateRange(Long userId, LocalDate start, LocalDate end, Pageable pageable);
 }

@@ -28,5 +28,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
   @Query("update Diary d set d.tag = :tag where d.id = :id")
   void updateTag(@Param("id") Long id, @Param("tag") Tag tag);
 
+  Diary findByWriterIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
 
+  Page<Diary> findAllByWriterIdAndCreatedAtBetween(Long userId, LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
 }
