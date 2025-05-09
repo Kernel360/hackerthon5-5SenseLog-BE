@@ -109,7 +109,7 @@ public class JwtUtil {
                 token,
                 EXPIRATION_TIME_MS / 1000,
                 secureCookie ? "; Secure" : "",
-                "; SameSite=None" // CORS 허용 필요시 강제
+                "; SameSite=Lax" // CORS 허용 필요시 강제
         );
 
         response.addHeader("Set-Cookie", cookie);

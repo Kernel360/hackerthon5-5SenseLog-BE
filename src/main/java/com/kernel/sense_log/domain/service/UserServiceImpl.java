@@ -17,6 +17,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public User saveUser(User user) {
+        
         // 이메일 중복 검사
         User existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser != null) {
