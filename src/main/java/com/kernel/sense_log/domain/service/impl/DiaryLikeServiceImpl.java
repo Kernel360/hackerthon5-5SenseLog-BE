@@ -1,11 +1,9 @@
 package com.kernel.sense_log.domain.service.impl;
 
-import com.kernel.sense_log.domain.entity.Diary;
 import com.kernel.sense_log.domain.entity.DiaryLike;
 import com.kernel.sense_log.domain.entity.enumeration.Tag;
 import com.kernel.sense_log.domain.repository.DiaryLikeRepository;
-import com.kernel.sense_log.domain.repository.DiaryRepository;
-import com.kernel.sense_log.web.dto.DiaryLikeResDTO;
+import com.kernel.sense_log.web.dto.response.DiaryLikeResDTO;
 import com.kernel.sense_log.domain.service.DiaryLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

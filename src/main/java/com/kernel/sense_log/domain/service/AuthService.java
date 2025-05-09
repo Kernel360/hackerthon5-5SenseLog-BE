@@ -4,6 +4,7 @@ import com.kernel.sense_log.common.exception.UnauthenticatedException;
 import com.kernel.sense_log.domain.auth.jwt.JwtUtil;
 import com.kernel.sense_log.domain.entity.User;
 import com.kernel.sense_log.domain.repository.UserRepository;
+import com.kernel.sense_log.domain.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

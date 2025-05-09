@@ -1,4 +1,4 @@
-package com.kernel.sense_log.web.dto;
+package com.kernel.sense_log.web.dto.response;
 
 import com.kernel.sense_log.domain.entity.User;
 import lombok.Builder;
