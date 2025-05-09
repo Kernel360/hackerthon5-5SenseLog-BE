@@ -32,7 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://deploy-react-1:3000")
+                .allowedOrigins("http://43.200.172.192:3000")
                 .allowedMethods("*")
                 .allowCredentials(true)
                 .allowedHeaders("*");
