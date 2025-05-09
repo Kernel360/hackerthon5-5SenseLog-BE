@@ -31,4 +31,8 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
   Diary findByWriterIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
 
   Page<Diary> findAllByWriterIdAndCreatedAtBetween(Long userId, LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
+
+  Page<Diary> findByIsPrivateAndCreatedAtBetween(boolean isPrivate, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+  Page<Diary> findByTagAndIsPrivateAndCreatedAtBetween(Tag tag, boolean isPrivate, LocalDateTime start, LocalDateTime end, Pageable pageable);
 }

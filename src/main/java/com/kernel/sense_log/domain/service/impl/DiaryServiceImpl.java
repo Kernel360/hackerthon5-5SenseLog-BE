@@ -51,8 +51,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     LocalDateTime start = baseDate.atTime(5, 0);
     LocalDateTime end = baseDate.plusDays(1).atTime(5, 0);
-    return diaryRepository.findAllByCreatedAtBetween(start, end, pageable);
-
+    return diaryRepository.findByIsPrivateAndCreatedAtBetween(false, start, end, pageable);
   }
 
   @Override
@@ -99,6 +98,6 @@ public class DiaryServiceImpl implements DiaryService {
 
     LocalDateTime start = baseDate.atTime(5, 0);
     LocalDateTime end = baseDate.plusDays(1).atTime(5, 0);
-    return diaryRepository.findByTagAndCreatedAtBetween(tag, start, end, pageable);
+    return diaryRepository.findByTagAndIsPrivateAndCreatedAtBetween(tag, false, start, end, pageable);
   }
 }
