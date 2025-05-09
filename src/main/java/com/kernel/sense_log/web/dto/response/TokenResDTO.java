@@ -1,4 +1,4 @@
-package com.kernel.sense_log.web.dto;
+package com.kernel.sense_log.web.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,9 +1,10 @@
-package com.kernel.sense_log.domain.service;
+package com.kernel.sense_log.domain.service.impl;
 
 
 import com.kernel.sense_log.domain.auth.PasswordEncoder;
 import com.kernel.sense_log.domain.entity.User;
 import com.kernel.sense_log.domain.repository.UserRepository;
+import com.kernel.sense_log.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
