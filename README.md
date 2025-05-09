@@ -97,7 +97,7 @@ AI가 당신의 감정을 이해하고 위로하며,
 
 ### 발표 자료
 
-<a href="https://github.com/Kernel360/hackerthon5-5SenseLog-BE/tree/main/assets/raw/main/docs/오감일기_발표자료.pdf">
+<a href="https://github.com/Kernel360/hackerthon5-5SenseLog-BE/blob/main/assets/%EC%98%A4%EA%B0%90%EC%9D%BC%EA%B8%B0_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C.pdf">
   <img src="./assets/ppt메인.jpg" alt="서비스_아키텍처" style="width: 70%;" />
 </a>
 
